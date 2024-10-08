@@ -4,8 +4,8 @@
 #include "filesystem.h"
 #include "palette.h"
 #include "save.h"
+#include "sprite.h"
 #include "unk_02009D48.h"
-#include "unk_02023694.h"
 
 typedef struct UnkStruct_0200D2B4 {
     int resourceSet;
@@ -14,7 +14,7 @@ typedef struct UnkStruct_0200D2B4 {
     s16 z;
     u16 animSeqNo;
     int rotation;
-    int unk_10;
+    int palIndex;
     NNS_G2D_VRAM_TYPE whichScreen;
     int unk_18;
     int unk_1C;
@@ -27,12 +27,12 @@ typedef struct UnkTemplate_0200D748 {
     s16 y;
     s16 z;
     u16 animation;
-    u32 spritePriority;
-    u32 pal;
+    int spritePriority;
+    int pal;
     NNS_G2D_VRAM_TYPE vram;
-    u32 resIdList[GF_GFX_RES_TYPE_MAX];
-    u32 bgPriority;
-    u32 vramTransfer;
+    int resIdList[GF_GFX_RES_TYPE_MAX];
+    int bgPriority;
+    int vramTransfer;
 } UnkTemplate_0200D748; // size=0x34
 
 typedef struct SpriteRenderer {
@@ -87,12 +87,12 @@ typedef union SpriteResourceCountsListUnion {
 SpriteRenderer *SpriteRenderer_Create(HeapID);
 SpriteGfxHandler *SpriteRenderer_CreateGfxHandler(SpriteRenderer *);
 GF_G2dRenderer *SpriteRenderer_GetG2dRendererPtr(SpriteRenderer *);
-BOOL sub_0200CF70(SpriteRenderer *renderer, const OamManagerParam *oamManagerParam, const OamCharTransferParam *oamTransferParam, int a3);
-BOOL sub_0200CFF4(SpriteRenderer *renderer, SpriteGfxHandler *gfxHandler, int);
+BOOL SpriteRenderer_CreateOamCharPlttManagers(SpriteRenderer *renderer, const OamManagerParam *oamManagerParam, const OamCharTransferParam *oamTransferParam, int a3);
+BOOL SpriteRenderer_CreateSpriteList(SpriteRenderer *renderer, SpriteGfxHandler *gfxHandler, int);
 void thunk_Sprite_Delete(Sprite *sprite);
-void sub_0200D020(SpriteGfxHandler *gfxHandler);
+void SpriteGfxHandler_RenderAndAnimateSprites(SpriteGfxHandler *gfxHandler);
 void thunk_OamManager_ApplyAndResetBuffers(void);
-void sub_0200D03C(void);
+void SpriteRenderer_thunk_UpdateCellTransferStateManager(void);
 void SpriteRenderer_RemoveGfxHandler(SpriteRenderer *renderer, SpriteGfxHandler *gfxHandler);
 void SpriteRenderer_Delete(SpriteRenderer *);
 BOOL sub_0200D294(SpriteRenderer *renderer, SpriteGfxHandler *gfxHandler, const u16 *fileIdList);
@@ -111,8 +111,8 @@ BOOL SpriteRenderer_LoadAnimResObjFromNarcId(SpriteRenderer *renderer, SpriteGfx
 BOOL SpriteRenderer_LoadAnimResObjFromOpenNarc(SpriteRenderer *renderer, SpriteGfxHandler *gfxHandler, NARC *narc, int fileId, BOOL compressed, int resId);
 UnkImageStruct *SpriteRenderer_LoadResourcesAndCreateSprite(SpriteRenderer *renderer, SpriteGfxHandler *gfxHandler, const UnkTemplate_0200D748 *unkTemplate);
 UnkImageStruct *SpriteRenderer_LoadResourcesAndCreateSprite_CustomBottomScreenOffset(SpriteRenderer *renderer, SpriteGfxHandler *gfxHandler, const UnkTemplate_0200D748 *unkTemplate, fx32 yOffset);
-NNSG2dImagePaletteProxy *sub_0200D934(SpriteGfxHandler *gfxHandler, int id);
-int sub_0200D944(SpriteGfxHandler *gfxHandler, int id, NNS_G2D_VRAM_TYPE vram);
+NNSG2dImagePaletteProxy *GfGfxHandler_GetPlttProxy(SpriteGfxHandler *gfxHandler, int id);
+int GfGfxHandler_GetPlttNumById(SpriteGfxHandler *gfxHandler, int id, NNS_G2D_VRAM_TYPE vram);
 BOOL SpriteGfxHandler_UnloadCharObjById(SpriteGfxHandler *gfxHandler, u32 character);
 BOOL SpriteGfxHandler_UnloadPlttObjById(SpriteGfxHandler *gfxHandler, u32 pal);
 BOOL SpriteGfxHandler_UnloadCellObjById(SpriteGfxHandler *gfxHandler, u32 cell);
